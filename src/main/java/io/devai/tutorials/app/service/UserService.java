@@ -10,6 +10,7 @@ import io.devai.tutorials.app.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.security.auth.login.LoginException;
@@ -26,6 +27,8 @@ public class UserService {
     UserRepository repository;
     @Autowired
     JwtService jwtService;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     public UserDetails getUserDetails(String email) {
         User user = repository.findByEmail(email);
@@ -40,8 +43,8 @@ public class UserService {
 
     public AuthResponse login(LoginRequest request) throws LoginException {
         try {
-            User user = repository.findByEmailAndPassword(request.getEmail(), request.getPassword());
-            if (user == null) {
+            User user = repository.findByEmail(request.getEmail());
+            if (user == null || !passwordEncoder.matches(request.getPassword(), user.getPassword())) {
                 throw new LoginException("Invalid credentials");
             }
 
@@ -68,7 +71,8 @@ public class UserService {
 
             Date now = new Date();
             String token = null;
-            User user = new User(null, request.getEmail(), token, request.getName(), request.getPassword(), Arrays.asList(Role.USER), now, now);
+            String hash = passwordEncoder.encode(request.getPassword());
+            User user = new User(null, request.getEmail(), token, request.getName(), hash, Arrays.asList(Role.USER), now, now);
             if (user == null) {
                 throw new LoginException("Invalid credentials");
             }
