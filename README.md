@@ -1,8 +1,5 @@
 # Java Crud API with Spring, Mongo and JWT authentication
 
-Source code at: [GitHub](https://github.com/ldevai/spring-crud-nosql-api)
-
-
 #### Project creation
 
 The boilerplate was created with the help of [start.spring.io](http://start.spring.io) with the following configuration:
