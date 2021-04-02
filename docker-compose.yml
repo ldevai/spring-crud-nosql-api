@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8002:8002
+    restart: always
+    environment:
+      COMPOSE_CONVERT_WINDOWS_PATHS: 1
+      APP_ENV: prod
+
+  app-dev:
+    container_name: app-dev
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8001:8001
+    restart: always
+    environment:
+      COMPOSE_CONVERT_WINDOWS_PATHS: 1
+      APP_ENV: dev
+
+  db:
+    container_name: app-db
+    image: mongo:latest
+    user: 'root'
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data:/data/db
+    environment:
+      POSTGRES_USER: demo
+      POSTGRES_PASSWORD: demo
+      POSTGRES_DB: demo
+    restart: always
+
+  mongo-express:
+    container_name: app-mongo-express
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_SERVER: db

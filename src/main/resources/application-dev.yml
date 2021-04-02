@@ -1,0 +1,12 @@
+server:
+  port: 8001
+  servlet:
+    context-path: '/api'
+
+db:
+  name: demo-dev
+  url: mongodb://db:27017
+
+jwt:
+  secret: jWtSeCrEt
+  expiry: 3600000
